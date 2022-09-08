@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +17,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String url = '';
+  //String imagePath ='';
+  var data;
+  var result;
   File? image;
   Future pickImage()async{
     try{
@@ -33,11 +38,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    String url = '';
-    String imagePath ='';
-    File _image;
-    String _image1 = "";
-    var data;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -45,7 +46,7 @@ class _HomeState extends State<Home> {
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(
-                  left: 55,
+                  left: 80,
                   top: 138,
                   bottom: 87,
                 ),
@@ -102,15 +103,9 @@ class _HomeState extends State<Home> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 44),
+              padding: const EdgeInsets.only(top: 44,left: 90,bottom: 40),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 105,
-                    height: 72,
-                    child: Image.
-                    asset('assets/images/phone.jpg'),
-                  ),
                   InkWell(
                     onTap: (){
                       pickImage();
@@ -120,16 +115,19 @@ class _HomeState extends State<Home> {
                         width: 251,
                         height: 48,
                         decoration: BoxDecoration(
-                          color: const Color(0xfff97f17),
+                          border: Border.all(
+                            width: 2, //
+                            color: Color(0xffAEACAC)
+                          ),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Center(
                           child: Text(
-                            'Use Gallery',
+                            'Upload',
                             style: TextStyle(
                               fontFamily: 'Tahoma',
                               fontSize: 24,
-                              color: const Color(0xffffffff),
+                              color: const Color(0xfff97f17),
                             ),
                             textAlign: TextAlign.center,
                             softWrap: false,
@@ -144,19 +142,25 @@ class _HomeState extends State<Home> {
           SizedBox(height: 10,),
 
             Padding(
-              padding: const EdgeInsets.only(left:50.0),
+              padding: const EdgeInsets.only(left:10.0),
               child: InkWell(
                 onTap: (){
-                  // url = 'http://127.0.0.1:5000/api?image=$imagePath';https://aka.ms/pscore6
-                  // print(url);
-                  // fetchData(url).then((value) {
-                  // data = value;
-                  // data = jsonDecode(data);
-                  // print(data);
-                  // });
+                  url = 'https://34dd-197-34-172-197.ngrok.io/api?image=$image';
+                  print(url);
+                  fetchData(url).then((value) {
+                    data = value;
+                    data = jsonDecode(data);
+                    print(data);
+                    result=data['result'];
+                    if (result == 0) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>negativeresult()));
+                    }else{
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>positiveresult()));
+                    }
+                  });
                 },
                 child: Container(
-                  width: 251,
+                  width: 350,
                   height: 48,
                   decoration: BoxDecoration(
                     color: const Color(0xfff97f17),
